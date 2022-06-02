@@ -261,13 +261,42 @@ double Combination(ll n, ll r){
     Time Complexity : O(1)
     Space Complexity : O(1)
 */
-void QuadraticRoots(int a, int b, int c){
+void QuadraticRoots_print(int a, int b, int c){
     double d = b*b - 4*a*c;
     double x1 = (-b + sqrt(d))/(2*a);
     double x2 = (-b - sqrt(d))/(2*a);
 
     cout<<"Roots are : "<<x1<<" and "<<x2<<endl;
 }
+
+
+vector<int> QuadraticRoots_return(int a, int b, int c) {
+        vector<int> v;
+        double d = b*b - 4*a*c;
+        if(d<0){
+            v.push_back(-1);
+        }
+        else if(d == 0){
+            v.push_back(floor(-b/(2*a)));
+            v.push_back(floor(-b/(2*a)));
+        }
+        else{
+            d = sqrt(d);
+            int x1 = floor((-b+d)/(double)(2*a));
+            int x2 = floor((-b-d)/(double)(2*a));
+            
+            if(x1>x2){
+                v.push_back(x1);
+                v.push_back(x2);
+            }
+            else {
+                v.push_back(x2);
+                v.push_back(x1);    
+            }
+        }
+        return v;
+    }
+
 
 
 /*
@@ -394,6 +423,88 @@ ll chinese_remainder_theorem_efficient(ll num[], ll rem[], ll k)
     return result;
 }
 
+
+/*
+    To count the no of digits in N!
+
+    The best solution would be to use the useful property of logarithms to calculate the required answer. 
+    
+
+    We know,
+    log(a*b) = log(a) + log(b)
+
+    Therefore
+    log( n! ) = log(1*2*3....... * n) 
+            = log(1) + log(2) + ........ +log(n)
+
+    Now, observe that the floor value of log base 10 increased by 1, of any number, gives the number of digits present in that number.
+
+    Hence, output would be : floor(log(n!)) + 1.
+
+    Time Complexity : O(N)
+    Auxilliary Space : O(1)
+*/
+int digitsInFactorial1(int N){
+    if (N < 0)  return 0;
+    if (N <= 1) return 1;
+
+    double digits = 0;
+    for(int i = 1; i<=N; i++){
+        digits += log10(i);
+    }
+    return floor(digits)+1;
+}
+
+/*
+    The above solution would not be able to handle cases where n >10^6 
+    So, can we improve our solution ? 
+    Yes ! we can.
+
+    We can use Kamenetsky’s formula to find our answer ! 
+    
+    It approximates the number of digits in a factorial by :
+    f(x) =    log10( ((n/e)^n) * sqrt(2*pi*n))
+
+    Thus, we can pretty easily use the property of logarithms to,
+    f(x) = n* log10(( n/ e)) + log10(2*pi*n)/2 
+    And that’s it ! 
+
+    Our solution can handle very large inputs that can be accommodated in a 32 bit integer, and even beyond that ! 
+
+    More about Kamenetsky's formula : https://dev.to/remonhasan/kamenetsky-s-algorithm-3gj9
+
+    Time Complexity : O(1)
+    Auxilliary Space : O(1)
+*/
+
+int digitsInFactorial2(int N){
+    if (N < 0)  return 0;
+    if (N <= 1) return 1;
+
+    double digits = N * log10(N/M_E) + log10(2*M_PI*N)/2.0;
+
+    return floor(digits) + 1;
+}
+
+
+/*
+    Given a positive integer value N. The task is to find how many numbers less than or equal to N have numbers of divisors exactly equal to 3.
+
+    Time Complexity : O(N^1/2 * N^1/4)
+    Auxilliary Space :  O(1)
+*/
+int exactly3Divisors(int N){
+    int count = 0;
+    if(N>=4) count++;
+    if(N>=9) count++;
+    
+    for(int i = 5; i*i <= N ; i+=6){
+        if(isPrime(i)) count++;
+        if((i+2)*(i+2) <= N && isPrime(i+2)) count++;
+    }
+    
+    return count;
+}
 
 int main(){
 
