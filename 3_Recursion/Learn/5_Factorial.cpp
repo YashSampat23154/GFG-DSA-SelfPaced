@@ -7,10 +7,6 @@
 #define ss second
 #define rep(i,a,b) for(int i=a; i<b; i++)
 
-//struct Values{
-//int x;
-//};
-
 using namespace std;
 
 /*
